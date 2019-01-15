@@ -38,6 +38,10 @@ html {
   justify-content: space-around;
   flex-direction: column;
 }
+.open-input {
+  border: 0px;
+  padding: 6px 10px;
+}
 
 /* 阿里图标库引入 */
 @font-face {

@@ -6,9 +6,6 @@ import Router from 'vue-router'
 // import PayFailPage from '@/components/PayFailPage'
 
 const Home = () => import('@/components/Home')
-const RedPacketPage = () => import('@/components/RedPacketPage')
-const PaySuccessPage = () => import('@/components/PaySuccessPage')
-const PayFailPage = () => import('@/components/PayFailPage')
 
 Vue.use(Router)
 
@@ -17,22 +14,10 @@ export default new Router({
     { // 主页
       path: '/',
       name: 'Home',
+      meta: {
+        title: '首页'
+      },
       component: Home
-    },
-    { // 发红包页面
-      path: '/red',
-      name: 'RedPacketPage',
-      component: RedPacketPage
-    },
-    { // 支付成功页面
-      path: '/pay/success',
-      name: 'PaySuccessPage',
-      component: PaySuccessPage
-    },
-    { // 支付失败页面
-      path: '/pay/fail',
-      name: 'PayFailPage',
-      component: PayFailPage
     },
   ]
 })

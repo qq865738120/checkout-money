@@ -15,8 +15,6 @@ import utils from './common/utils.js' //全局引入自定义工具类
 import comm from './common/comm.js' //引入公共js
 import './common/filter.js' //全局定义过滤器
 import $ from 'jquery'
-import { listPullLoading } from 'list-pull-loading' //一个第三方的上拉加载下拉刷新列表组件
-import "list-pull-loading/dist/list-pull-loading.css"
 import VueLazyload from 'vue-lazyload' //图片懒加载插件
 var wx = require('weixin-js-sdk'); //引入微信js-sdk
 
@@ -33,8 +31,6 @@ Vue.prototype.$utils = utils;
 Vue.prototype.$comm = comm;
 Vue.prototype.$ = $;
 Vue.prototype.$wx = wx;
-
-Vue.component('ListPullLoading', listPullLoading)
 
 Vue.use(VueLazyload, {
   attempt: 1,
@@ -58,12 +54,7 @@ new Vue({
   methods: {
     /* 初始化函数 */
     init() {
-      this.$store.commit('setLiveTitleId', this.$utils.getParam('liveTitleId'));
-      this.$store.commit('setOpenId', this.$utils.getParam('openId'));
-      this.$store.commit('setCmpyId', this.$utils.getParam('cmpyId'));
-      console.log('liveTitleId =', this.$store.state.liveTitleId);
-      console.log('openId =', this.$store.state.openId);
-      console.log('cmpyId =', this.$store.state.cmpyId);
+      
     },
     /* 配置 */
     config() {
