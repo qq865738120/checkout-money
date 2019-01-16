@@ -1,13 +1,13 @@
 <template>
   <div id="app">
     <transition
-      enter-active-class="animated zoomIn faster"
-      leave-active-class="animated zoomOut faster">
+      enter-active-class="animated fadeInLeftBig faster"
+      leave-active-class="animated fadeOutLeftBig faster">
       <router-view v-wechat-title="$route.meta.title" v-show="$store.state.initFag"/>
     </transition>
     <transition
-      enter-active-class="animated zoomIn faster"
-      leave-active-class="animated zoomOut faster">
+      enter-active-class="animated fadeInLeftBig faster"
+      leave-active-class="animated fadeOutLeftBig faster">
       <div class="com-flex-center loading" v-show="!$store.state.initFag">
         <GridLoader color="#ED7E00" size="10"></GridLoader>
         <p>loading...</p>
