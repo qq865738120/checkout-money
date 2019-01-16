@@ -64,12 +64,12 @@ html {
 /* 阿里图标库引入 */
 @font-face {
   font-family: 'iconfont';  /* project id 1018005 */
-  src: url('//at.alicdn.com/t/font_1018005_3zdt3itnsge.eot');
-  src: url('//at.alicdn.com/t/font_1018005_3zdt3itnsge.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_1018005_3zdt3itnsge.woff2') format('woff2'),
-  url('//at.alicdn.com/t/font_1018005_3zdt3itnsge.woff') format('woff'),
-  url('//at.alicdn.com/t/font_1018005_3zdt3itnsge.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_1018005_3zdt3itnsge.svg#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_1018005_7ihzpxxirjd.eot');
+  src: url('//at.alicdn.com/t/font_1018005_7ihzpxxirjd.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_1018005_7ihzpxxirjd.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_1018005_7ihzpxxirjd.woff') format('woff'),
+  url('//at.alicdn.com/t/font_1018005_7ihzpxxirjd.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_1018005_7ihzpxxirjd.svg#iconfont') format('svg');
 }
 
 .iconfont {
@@ -83,3 +83,4 @@ html {
 .icon-jiantou:after {content: "\e61f";}
 .icon-purse:before {content: "\e65b";}
 .icon-youhuiquan:before {content: "\e69b";}
+.icon-voucher:after {content: "\e600";font-size: 95px;margin-top: 5px;}
