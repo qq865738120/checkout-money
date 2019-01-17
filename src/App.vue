@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :style="{ background: $route.meta.bgColor }">
     <transition
       enter-active-class="animated fadeInLeftBig faster"
       leave-active-class="animated fadeOutLeftBig faster">
@@ -22,8 +22,8 @@ import { GridLoader } from '@saeris/vue-spinners'
 export default {
   name: 'App',
   /* 该方法中完成项目的初始化工作 */
-  async created() {
-
+  mounted() {
+    console.log('this.$route', this.$route);
   },
   components: {
     GridLoader

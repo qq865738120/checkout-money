@@ -6,6 +6,7 @@ import Router from 'vue-router'
 // import PayFailPage from '@/components/PayFailPage'
 
 const Home = () => import('@/components/Home')
+const PaySuccessPage = () => import('@/components/PaySuccessPage')
 
 Vue.use(Router)
 
@@ -15,9 +16,19 @@ export default new Router({
       path: '/',
       name: 'Home',
       meta: {
-        title: '首页'
+        title: '钱多来收银台',
+        bgColor: '#f5f5f5'
       },
       component: Home
+    },
+    { // 主页
+      path: '/pay/success',
+      name: 'PaySuccessPage',
+      meta: {
+        title: '钱多来收银台',
+        bgColor: '#ffffff'
+      },
+      component: PaySuccessPage
     },
   ]
 })

@@ -1,20 +1,20 @@
 <template>
   <div class="root com-flex-center">
-    <div class="left" :style="{ backgroundColor: data.bgColor}">
-      <div class="content-left com-flex-col-center">
+    <div class="left" :style="{ backgroundColor: data.bgColor, color: data.isAvailable ? '' : '#999'}">
+      <div class="content-left com-flex-col-center" :style="{ color: data.isAvailable ? '' : '#999'}">
         <span class="first">{{ data.amount }}</span>
         <span>{{ data.condition }}</span>
       </div>
       <div class="content-right">
-        <div><img v-lazy="data.shopIcon" /><span>{{ data.shopName }}</span></div>
+        <div><img v-lazy="data.shopIcon" :style="{ filter: data.isAvailable ? '' : 'grayscale(100%)' }" /><span>{{ data.shopName }}</span></div>
         <div>有效期 {{ data.vPeriod }}</div>
         <div>
-          <div>代金券</div>
-          <span>2张可用</span>
+          <div :style="{ background: data.isAvailable ? '' : '#999'}">{{ data.voucherType }}</div>
+          <span :style="{ color: data.isAvailable ? '' : '#999'}">{{ data.voucherCount }}张可用</span>
         </div>
       </div>
     </div>
-    <div class="right com-flex-center iconfont icon-voucher" :style="{color: btnColor}">
+    <div class="right com-flex-center iconfont icon-voucher" :style="{color: data.isAvailable ? '#F62135' : '#999'}">
       <span>
         {{ data.isAvailable ? (data.receive ? '立即领取' : '立即使用') : '不可用' }}
       </span>
@@ -33,7 +33,7 @@ export default {
   },
   data() {
     return {
-      btnColor: '#F62135'
+
     }
   }
 }
