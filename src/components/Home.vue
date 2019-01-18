@@ -1,7 +1,7 @@
 <template>
   <div class="root">
     <img class="icon" v-lazy="shopIcon"/>
-    <p class="title">搜空生活小店</p>
+    <p class="title">{{ shopName }}</p>
     <div class="com-flex-center card">
       <span>￥</span><input class="open-input" placeholder="请输入付款金额" />
     </div>
@@ -46,6 +46,7 @@ export default {
   data () {
     return {
       shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg',
+      shopName: '店铺名称',
       state: 'haveVoucher', // selectVoucher: 选中了优惠券  haveVoucher：有可选优惠券  noVoucher: 没有可使用的优惠券
       voucherAmount: 10.00,
       amount: 188.00,

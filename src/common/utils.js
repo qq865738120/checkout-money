@@ -10,6 +10,21 @@ const driverType = function() {
 }
 
 /*
+判断浏览器类型
+返回值：0表示微信，1表示支付宝，2表示其它
+*/
+const browserType = function() {
+  var browser = navigator.userAgent.toLowerCase();
+  if(browser.match(/Alipay/i) == "alipay"){
+    return 1
+  }else if(browser.match(/MicroMessenger/i)=="micromessenger"){
+    return 0
+  }else{
+    return 2
+  }
+}
+
+/*
 获取指定的URL参数值
 参数：paramName URL参数
 返回值：tyler
@@ -109,6 +124,7 @@ function formateMoney(val, isCut) {
 
 export default {
   driverType,
+  browserType,
   getParam,
   waitTask,
   string2Date,
