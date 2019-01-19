@@ -24,7 +24,7 @@ const getVoucherDetail = async function(context, discountId, amount, receive) {
 返回：可直接用于VoucherListItem组件的数据对象
 */
 const _formatVoucherDetail = function(context, data, amount, receive) {
-  let result = { isAvailable: '', receive: '', bgColor: '', amount: '', condition: '', shopIcon: '', shopName: '', vPeriod: '', voucherType: '' };
+  let result = {};
   result.shopName = context.$store.state.shopName;
   result.shopIcon = context.$store.state.shopIcon;
   result.bgColor = '#fcf4f2';
@@ -33,7 +33,8 @@ const _formatVoucherDetail = function(context, data, amount, receive) {
   result.condition = '满' + data.useMoney + '可用';
   result.amount = data.discountType == 1 ? data.money : data.rebate;
   result.isAvailable = parseInt(amount) >= data.useMoney ? true : false;
-  result.receive = receive
+  result.receive = receive;
+  result.id = data.discountId;
   return result
 }
 

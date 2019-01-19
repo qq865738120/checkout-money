@@ -27,7 +27,7 @@
     <Popup v-model="isShowPopup" height="50%" style="border-radius: 15px 15px 0 0;">
       <div class="popup-select-voucher com-flex-col-center">
         <p>优惠券</p>
-        <VoucherListItem class="voucher-item" v-for="(item, index) of voucherList" :data="item" :key="index"></VoucherListItem>
+        <VoucherListItem class="voucher-item" v-for="(item, index) of voucherList" :data="item" :key="index" @use="onVoucherUse"></VoucherListItem>
       </div>
     </Popup>
   </div>
@@ -58,11 +58,10 @@ export default {
       amount: 188.00,
       isShowPopup: false,
       voucherList: [ // isAvailable: 是否可使用, receive: 是否显示立即领取, bgColor: 背景色, amount: 优惠券金额, condition: 优惠券使用条件, shopIcon: 店铺图标, shopName: 店铺名称, vPeriod: 使用期限
-        { isAvailable: false, receive: false, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
-        { isAvailable: true, receive: true, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
-        { isAvailable: false, receive: true, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
-        { isAvailable: true, receive: true, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
-        { isAvailable: false, receive: true, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
+        { id: '', isAvailable: false, receive: false, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
+        { id: '', isAvailable: true, receive: true, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
+        { id: '', isAvailable: false, receive: true, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
+        { id: '', isAvailable: true, receive: true, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
       ]
     }
   },
@@ -134,6 +133,11 @@ export default {
       console.log('list', list);
       this.voucherList = list
       this.isShowPopup = true
+    },
+
+    onVoucherUse(id) { //使用优惠券
+      this.isShowPopup = false;
+      console.log('id', id);
     }
   }
 }

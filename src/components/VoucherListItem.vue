@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <div class="right com-flex-center iconfont icon-voucher" :style="{color: data.isAvailable ? '#F62135' : '#999'}">
+    <div class="right com-flex-center iconfont icon-voucher" :style="{color: data.isAvailable ? '#F62135' : '#999'}" @click="onUse">
       <span>
         {{ data.isAvailable ? (data.receive ? '立即领取' : '立即使用') : '不可用' }}
       </span>
@@ -25,15 +25,14 @@
 <script>
 export default {
   name: 'VoucherListItem',
-  mounted() {
-
-  },
   props: {
     data: Object
   },
-  data() {
-    return {
-
+  methods: {
+    onUse() {
+      if (this.data.isAvailable || this.data.receive) { //优惠券可用或者可领取
+        this.$emit('use', this.data.id)
+      }
     }
   }
 }
