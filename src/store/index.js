@@ -16,6 +16,12 @@ export default new Vuex.Store({
     mchId: '', // 商户id
     qrcodeId: '', //二维码id
     qrcodeType: '', //二维码类型 1-自助收款码 2-指定金额收款码
+    openId: '', //微信openId
+    aliPayUserId: '', //支付宝userId
+    amount: '', //需要支付的金额
+    mainUserId: '', //用户id
+    shopName: '', //店铺名称
+    shopIcon: '', //店铺图标
   },
   mutations: {
     setEnvironment(state, value) {
@@ -44,6 +50,24 @@ export default new Vuex.Store({
     },
     setQrcodeType(state, value) {
       state.qrcodeType = value
+    },
+    setOpenId(state, value) {
+      state.openId = value
+    },
+    setAliPayUserId(state, value) {
+      state.aliPayUserId = value
+    },
+    setAmount(state, value) {
+      state.amount = value
+    },
+    setMainUserId(state, value) {
+      state.mainUserId = value
+    },
+    setShopName(state, value) {
+      state.shopName = value
+    },
+    setShopIcon(state, value) {
+      state.shopIcon = value
     }
   }
 })

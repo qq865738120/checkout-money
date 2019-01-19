@@ -2,7 +2,7 @@
   <div class="root com-flex-center">
     <div class="left" :style="{ backgroundColor: data.bgColor, color: data.isAvailable ? '' : '#999'}">
       <div class="content-left com-flex-col-center" :style="{ color: data.isAvailable ? '' : '#999'}">
-        <span class="first">{{ data.amount }}</span>
+        <span class="first" :class="data.voucherType == '代金券' ? 'first-before' : 'first-after'">{{ data.amount }}</span>
         <span>{{ data.condition }}</span>
       </div>
       <div class="content-right">
@@ -10,7 +10,7 @@
         <div>有效期 {{ data.vPeriod }}</div>
         <div>
           <div :style="{ background: data.isAvailable ? '' : '#999'}">{{ data.voucherType }}</div>
-          <span :style="{ color: data.isAvailable ? '' : '#999'}">{{ data.voucherCount }}张可用</span>
+          <!-- <span :style="{ color: data.isAvailable ? '' : '#999'}">{{ data.voucherCount }}张可用</span> -->
         </div>
       </div>
     </div>
@@ -80,8 +80,12 @@ export default {
   font-size: 28px;
   margin-bottom: 4px;
 }
-.first::before {
+.first-before::before {
   content: "￥";
+  font-size: 14px;
+}
+.first-after::after {
+  content: "折";
   font-size: 14px;
 }
 .content-right {

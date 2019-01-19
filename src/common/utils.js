@@ -58,6 +58,32 @@ function waitTask(context, valueName) {
 }
 
 /*
+格式化日期
+参数：date Date 日期对象
+     fmt String 日期格式串
+返回：日期字符串
+*/
+const formatDate = function(date, fmt) {
+  if (/(y+)/.test(fmt)) {
+    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+  }
+  let o = {
+    'M+': date.getMonth() + 1,
+    'd+': date.getDate(),
+    'h+': date.getHours(),
+    'm+': date.getMinutes(),
+    's+': date.getSeconds()
+  }
+  for (let k in o) {
+    if (new RegExp(`(${k})`).test(fmt)) {
+      let str = o[k] + ''
+      fmt = fmt.replace(RegExp.$1, RegExp.$1.length === 1 ? str : ('00' + str).substr(str.length))
+    }
+  }
+  return fmt
+}
+
+/*
 将字符串转换成Date对象，支持安卓和ios
 参数：str String 日期字符串
 返回：日期对象
@@ -127,6 +153,7 @@ export default {
   browserType,
   getParam,
   waitTask,
+  formatDate,
   string2Date,
   timeDifference,
   timeStemp2DateArr,
