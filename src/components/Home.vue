@@ -38,7 +38,7 @@ import methods from '@/common/methods.js'
 import VoucherListItem from '@/components/VoucherListItem'
 let fontSize = '37.5';
 let voucherList = []; //优惠券列表接口返回数据，将在页面初始化时调用接口获取
-let discountDetailId = '' // 使用的优惠券id
+let detailId = '' // 使用的优惠券详细id
 
 export default {
   name: 'Home',
@@ -127,21 +127,16 @@ export default {
           return;
         }
       }
-      let list = [];
       this.$vux.loading.show({
        text: '加载中'
       })
-      for (let item of voucherList) { //遍历优惠券，并且获取每个优惠券的详细信息
-        let data = await methods.getVoucherDetail(this, item.discountId, this.inputAmount, false)
-        list.push(data)
-      }
       this.$vux.loading.hide()
-      this.voucherList = list
+      this.voucherList = methods.getVoucherDetail(this, voucherList, this.inputAmount, false)
       this.isShowPopup = true
     },
 
     onVoucherUse(id) { //使用优惠券
-      discountDetailId = id
+      detailId = id
       this.isShowPopup = false;
       this.state = 'selectVoucher'
       console.log('选择的优惠券id', id);
@@ -161,12 +156,13 @@ export default {
 
     async onPay() { //支付按钮点击事件
       let that = this;
+      this.$store.commit('setPayAmount', this.amount)
       this.$vux.loading.show({
        text: '加载中'
       })
       let par = {
         userOpenValue: '', //Y		用户标识，微信openid或者支付宝userid
-        payAmount: that.amount,	//Y		付款金额（原价，非优惠后金额）
+        payAmount: that.inputAmount,	//Y		付款金额（原价，非优惠后金额）
         qrcodeId: that.$store.state.qrcodeId,	//Y		二维码id
         buyClient: 2,	//Y		下单终端 1-app 2-H5 3-PC 4-小程序 5-门店收银
         buyPlatform: '',	//Y		下单平台 1-微信 2-支付宝 3-搜空云
@@ -179,13 +175,70 @@ export default {
         par.userOpenValue = this.$store.state.aliPayUserId
         par.buyPlatform = 2
       }
-      if (discountDetailId != '') { //如果使用了优惠券则传优惠券id
-        par.discountDetailId = discountDetailId
+      if (detailId != '') { //如果使用了优惠券则传优惠券id
+        par.discountDetailId = detailId
       }
       await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/order/submitScanOrder', { params: par}).then(res => {
         console.log('提交收款码订单', res.data);
         if (res.data.status == 100) {
-
+          if (this.$store.state.openId != null) { //调用微信支付
+            let data = {
+              channelId: that.$store.state.cashierId,	//Y		支付通道id
+              orderID: res.data.data.orderNo,	//Y		订单编号
+              openId: that.$store.state.openId,	//Y		微信openId
+              isMinipg: 0	//Y		1-小程序支付 0-js支付
+            }
+            this.$axios.post(this.$store.state.host + this.$store.state.path + '/sk2/mobile/pay/wftWechatPay', that.$qs.stringify(data)).then(res => {
+              console.log('微信支付', res.data);
+              // if (res.data.status == 100) {
+                this.$vux.loading.hide()
+                 //跳转到支付成功页面
+                this.$router.push({name: 'PaySuccessPage'})
+              // } else {
+              //   this.$vux.loading.hide()
+              //   this.$router.push({ //跳转到支付失败页面
+              //     name: 'TipsPage',
+              //     params: {
+              //       iconType: 'warn',
+              //       msg1: '支付失败'
+              //     }
+              //   })
+              // }
+            })
+          } else if (this.$store.state.aliPayUserId != null) { //嗲用支付宝支付
+            let data = {
+              channelId: that.$store.state.cashierId,	//Y		支付通道id
+              buyerId: that.$store.state.aliPayUserId,	//Y		支付宝用户id（付款方）
+              orderID: res.data.data.orderNo,	//Y		订单编号
+            }
+            this.$axios.post(this.$store.state.host + this.$store.state.path + '/sk2/mobile/pay/wftAliPay', that.$qs.stringify(data)).then(res => {
+              console.log('支付宝支付', res.data);
+              if (res.data.status == 100) {
+                this.$vux.loading.hide()
+                this.$router.push({ //跳转到支付成功页面
+                  name: 'TipsPage',
+                  params: {
+                    iconType: 'success',
+                    msg1: '支付成功'
+                  }
+                })
+              } else {
+                this.$vux.loading.hide()
+                this.$router.push({ //跳转到支付失败页面
+                  name: 'TipsPage',
+                  params: {
+                    iconType: 'warn',
+                    msg1: '支付失败'
+                  }
+                })
+              }
+            })
+          }
+        } else {
+          this.$vux.toast.show({
+            text: res.data.msg,
+            type: 'text'
+          })
         }
       })
     },

@@ -20,6 +20,7 @@ export default new Vuex.Store({
     openId: '', //微信openId
     aliPayUserId: '', //支付宝userId
     amount: '', //需要支付的金额
+    payAmount: '', //实际支付金额
     mainUserId: '', //用户id
     shopName: '', //店铺名称
     shopIcon: '', //店铺图标
@@ -63,6 +64,9 @@ export default new Vuex.Store({
     },
     setAmount(state, value) {
       state.amount = value
+    },
+    setPayAmount(state, value) {
+      state.payAmount = value
     },
     setMainUserId(state, value) {
       state.mainUserId = value
