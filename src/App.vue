@@ -39,14 +39,24 @@ export default {
       this.$store.commit('setOpenId', openId)
       that.$store.commit('setQrcodeId', qrcodeId)
       this.$store.commit('setAliPayUserId', aliPayUserId)
+
       await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/qrcode/getCompanyQrcodeInfo', { params: { qrcodeId: '1547000720000' }}).then(res => {
         console.log('获取二维码信息', res.data);
         if (res.data.status == '100') {
           that.$store.commit('setMchId', res.data.data.mchId)
           that.$store.commit('setQrcodeType', res.data.data.qrcodeType)
           that.$store.commit('setAmount', res.data.data.transactionAmountStr)
+        } else {
+          this.$router.push({ //不支持的浏览器，跳转到提示页面
+            name: 'TipsPage',
+            params: {
+              iconType: 'warn',
+              msg1: '网络异常，请稍后重试。'
+            }
+          })
         }
       })
+
       const browserType = this.$utils.browserType();
       const returnUrl = encodeURIComponent(window.location.href);
       if (browserType == '0' && openId == null) { //微信浏览器
@@ -71,6 +81,36 @@ export default {
           }
         })
       }
+
+      let cashierCode = ''
+      if (openId != null) { //微信支付
+        cashierCode = 'WFT-WECHAT'
+      } else if (aliPayUserId != null) { //支付宝支付
+        cashierCode = 'WFT-AILPAY'
+      } else {
+        this.$router.push({ //不支持的浏览器，跳转到提示页面
+          name: 'TipsPage',
+          params: {
+            iconType: 'warn',
+            msg1: '不支持的浏览器类型。'
+          }
+        })
+      }
+      await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/cashierinfo/getCashierinfo', { params: { cashierCode: cashierCode }}).then(res => {
+        console.log('获取收银台列表', res.data);
+        if (res.data.status == 100) {
+          that.$store.commit('setCashierId', res.data.data.cashierId)
+        } else {
+          this.$router.push({ //不支持的浏览器，跳转到提示页面
+            name: 'TipsPage',
+            params: {
+              iconType: 'warn',
+              msg1: '网络异常，请稍后重试。'
+            }
+          })
+        }
+      })
+
     }
   }
 }

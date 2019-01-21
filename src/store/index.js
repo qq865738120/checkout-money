@@ -14,6 +14,7 @@ export default new Vuex.Store({
     appid: 'wxfb8665f40c96d92c',
     initFag: false,
     mchId: '', // 商户id
+    cashierId: '', //收银台id
     qrcodeId: '', //二维码id
     qrcodeType: '', //二维码类型 1-自助收款码 2-指定金额收款码
     openId: '', //微信openId
@@ -44,6 +45,9 @@ export default new Vuex.Store({
     },
     setMchId(state, value) {
       state.mchId = value
+    },
+    setCashierId(state, value) {
+      state.cashierId = value
     },
     setQrcodeId(state, value) {
       state.qrcodeId = value

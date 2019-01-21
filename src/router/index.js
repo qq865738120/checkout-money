@@ -7,6 +7,7 @@ import Router from 'vue-router'
 
 const Home = () => import('@/components/Home')
 const PaySuccessPage = () => import('@/components/PaySuccessPage')
+const TipsPage = () => import('@/components/TipsPage')
 
 Vue.use(Router)
 
@@ -29,6 +30,15 @@ export default new Router({
         bgColor: '#ffffff'
       },
       component: PaySuccessPage
+    },
+    { // 主页
+      path: '/tips',
+      name: 'TipsPage',
+      meta: {
+        title: '提示',
+        bgColor: '#ffffff'
+      },
+      component: TipsPage
     },
   ]
 })

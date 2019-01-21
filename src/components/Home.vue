@@ -4,15 +4,15 @@
     <p class="title">{{ shopName }}</p>
     <div class="com-flex-center card">
       <span>￥</span>
-      <input v-model="inputAmount" type="number" class="open-input" :style="{width: inputWidth}" v-if="$store.state.qrcodeType == '1'" :placeholder="placeholder" @blur="onInputBlur" @keyup="onInputChange" />
+      <input v-model="inputAmount" type="number" class="open-input" :style="{width: inputWidth}" v-if="$store.state.qrcodeType == '1'" :placeholder="placeholder" @blur="onInputBlur" @keyup="onInputChange"/>
       <span v-if="$store.state.qrcodeType == '2'">{{ $store.state.amount }}</span>
     </div>
     <div class="card" style="margin-top: 1px">
       <div class="voucher com-flex-between">
         <span class="voucher-right iconfont icon-youhuiquan">优惠券</span>
-        <div class="com-flex-between" v-if="state == 'selectVoucher'">
-          <div class="voucher-tag">满减券</div>
-          <span class="iconfont icon-jiantou" style="font-size: 13px">-￥{{ amount }}</span>
+        <div class="com-flex-between" v-if="state == 'selectVoucher'" @click="onSelectVoucherClick">
+          <div class="voucher-tag">{{ voucherTag }}</div>
+          <span class="iconfont icon-jiantou" style="font-size: 13px">-￥{{ voucherAmount }}</span>
         </div>
         <span v-if="state == 'haveVoucher'" class="iconfont icon-jiantou color-999" style="font-size: 13px" @click="onSelectVoucherClick">使用优惠券</span>
         <span v-if="state == 'noVoucher'" class="color-999" style="font-size: 13px">暂无优惠券</span>
@@ -22,7 +22,7 @@
         <span class="amount">￥{{ amount }}</span>
       </div>
     </div>
-    <div class="pay-btn">开始付款</div>
+    <div class="pay-btn" @click="onPay">开始付款</div>
     <!-- <p class="offer">使用优惠码</p> -->
     <Popup v-model="isShowPopup" height="50%" style="border-radius: 15px 15px 0 0;">
       <div class="popup-select-voucher com-flex-col-center">
@@ -38,6 +38,7 @@ import methods from '@/common/methods.js'
 import VoucherListItem from '@/components/VoucherListItem'
 let fontSize = '37.5';
 let voucherList = []; //优惠券列表接口返回数据，将在页面初始化时调用接口获取
+let discountDetailId = '' // 使用的优惠券id
 
 export default {
   name: 'Home',
@@ -54,15 +55,16 @@ export default {
       placeholder: '请输入付款金额',
       inputAmount: '',
       state: 'noVoucher', // selectVoucher: 选中了优惠券  haveVoucher：有可选优惠券  noVoucher: 没有可使用的优惠券
-      voucherAmount: 10.00,
-      amount: 188.00,
+      voucherAmount: 0,
+      amount: 0,
       isShowPopup: false,
       voucherList: [ // isAvailable: 是否可使用, receive: 是否显示立即领取, bgColor: 背景色, amount: 优惠券金额, condition: 优惠券使用条件, shopIcon: 店铺图标, shopName: 店铺名称, vPeriod: 使用期限
         { id: '', isAvailable: false, receive: false, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
         { id: '', isAvailable: true, receive: true, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
         { id: '', isAvailable: false, receive: true, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
         { id: '', isAvailable: true, receive: true, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
-      ]
+      ],
+      voucherTag: '' //优惠券类型
     }
   },
   components: {
@@ -100,7 +102,7 @@ export default {
 
     onInputChange() { //金额输入框数值改变触发
       this.placeholder = ''
-      this.inputWidth = (14 + this.inputAmount.length * 14) / fontSize + 'rem'
+      this.inputWidth = (14 + (this.inputAmount.length - 1) * 14) / fontSize + 'rem'
     },
 
     onInputBlur() { //金额输入框失去焦点
@@ -108,6 +110,10 @@ export default {
       if (this.inputAmount == '') {
         this.placeholder = '请输入付款金额'
         this.inputWidth = 168 / fontSize + 'rem'
+      } else {
+        this.inputAmount = this.$utils.formateMoney(this.inputAmount);
+        this.onInputChange()
+        this.amount = this.inputAmount
       }
     },
 
@@ -130,15 +136,60 @@ export default {
         list.push(data)
       }
       this.$vux.loading.hide()
-      console.log('list', list);
       this.voucherList = list
       this.isShowPopup = true
     },
 
     onVoucherUse(id) { //使用优惠券
+      discountDetailId = id
       this.isShowPopup = false;
-      console.log('id', id);
-    }
+      this.state = 'selectVoucher'
+      console.log('选择的优惠券id', id);
+      for (let item of this.voucherList) {
+        if (item.id == id) {
+          this.voucherTag = item.voucherType
+          if (item.voucherType == '折扣券') {
+            this.amount = (parseFloat(this.inputAmount) * item.amount / 10).toFixed(2);
+            this.voucherAmount = (parseFloat(this.inputAmount) - this.amount).toFixed(2)
+          } else if (item.voucherType == '代金券') {
+            this.amount = (parseFloat(this.inputAmount) - item.amount).toFixed(2)
+            this.voucherAmount = item.amount
+          }
+        }
+      }
+    },
+
+    async onPay() { //支付按钮点击事件
+      let that = this;
+      this.$vux.loading.show({
+       text: '加载中'
+      })
+      let par = {
+        userOpenValue: '', //Y		用户标识，微信openid或者支付宝userid
+        payAmount: that.amount,	//Y		付款金额（原价，非优惠后金额）
+        qrcodeId: that.$store.state.qrcodeId,	//Y		二维码id
+        buyClient: 2,	//Y		下单终端 1-app 2-H5 3-PC 4-小程序 5-门店收银
+        buyPlatform: '',	//Y		下单平台 1-微信 2-支付宝 3-搜空云
+        buyPage: 4,	//Y		下单页面 1-详情也 2-店铺购物车 3-平台购物车 4-扫码页面
+      }
+      if (this.$store.state.openId != null) {
+        par.userOpenValue = this.$store.state.openId
+        par.buyPlatform = 1
+      } else if (this.$store.state.aliPayUserId != null) {
+        par.userOpenValue = this.$store.state.aliPayUserId
+        par.buyPlatform = 2
+      }
+      if (discountDetailId != '') { //如果使用了优惠券则传优惠券id
+        par.discountDetailId = discountDetailId
+      }
+      await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/order/submitScanOrder', { params: par}).then(res => {
+        console.log('提交收款码订单', res.data);
+        if (res.data.status == 100) {
+
+        }
+      })
+    },
+
   }
 }
 </script>
@@ -181,6 +232,7 @@ export default {
   border: 1px solid $--main-color;
   padding: 2px;
   border-radius: 4px;
+  margin-right: 4px;
 }
 .icon-jiantou::after {
   color: $--color-95;
@@ -211,7 +263,7 @@ export default {
   margin-right: 3px;
 }
 .pay-btn {
-  padding: 16px 28px;
+  padding: 16px 32px;
   color: white;
   background-color: $--main-color;
   border-radius: 30px;
