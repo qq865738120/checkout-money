@@ -16,18 +16,23 @@ import VoucherListItem from '@/components/VoucherListItem'
 export default {
   name: 'PaySuccessPage',
   mounted() {
-    let that = this
-    this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/cmpy/discount/receiveList', { params: { mchId: that.$store.state.mchId, mainUserId: that.$store.state.mainUserId }}).then(res => {
-      console.log('获取可领取优惠券列表', res.data);
-      this.voucherList = methods.getVoucherDetail(this, res.data.data, 0, false)
-    })
+    this.refVoucherList()
+    let that = this;
+    let id = setInterval(() => {
+      that.time--
+    }, 1000);
+    setTimeout(() => {
+      // let par = '?titleId='+ that.$store.state.liveTitleId +'&openId='+ that.$store.state.openId +'&cmpyId=' + that.$store.state.cmpyId;
+      clearInterval(id);
+      // window.location.href = this.$store.state.relHost + '/newmedia/pages/mobile/MicroWebsite/livebroadcast/livebroadCasttable.html' + par;
+    }, that.time * 1000)
   },
   data () {
     return {
       shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg',
       shopName: '搜空生活小店',
       amount: '198',
-      time: 3,
+      time: 12,
       voucherList: [] // isAvailable: 是否可使用, receive: 是否显示立即领取, bgColor: 背景色, amount: 优惠券金额, condition: 优惠券使用条件, shopIcon: 店铺图标, shopName: 店铺名称, vPeriod: 使用期限
     }
   },
@@ -35,9 +40,40 @@ export default {
     VoucherListItem
   },
   methods: {
-    onVoucherUse(id) {
 
+    refVoucherList() {
+      let that = this
+      this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/cmpy/discount/receiveList', { params: { mchId: that.$store.state.mchId, mainUserId: that.$store.state.mainUserId }}).then(res => {
+        console.log('获取可领取优惠券列表', res.data);
+        this.voucherList = methods.getVoucherDetail(this, res.data.data, 0, true)
+      })
+    },
+
+    onVoucherUse(id) {
+      let that = this
+      console.log('领取的优惠券id', id);
+      this.$vux.loading.show({
+       text: '加载中'
+      })
+      this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/cmpy/discount/receive', { params: { discountId: id, mchId: that.$store.state.mchId, mainUserId: that.$store.state.mainUserId }}).then(res => {
+        console.log('用户领取优惠券', res.data);
+        if (res.data.status == 100) {
+          this.$vux.toast.show({
+            text: '领取成功！',
+            type: 'success'
+          })
+          this.refVoucherList()
+          this.$vux.loading.hide()
+        } else {
+          this.$vux.toast.show({
+            text: res.data.msg,
+            type: 'cancel'
+          })
+          this.$vux.loading.hide()
+        }
+      })
     }
+
   }
 }
 </script>
