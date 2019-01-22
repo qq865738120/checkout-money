@@ -45,12 +45,13 @@ export default {
   async mounted() {
     fontSize = parseInt(this.$('html').css('font-size').replace('px', ''));
     await this.$utils.waitTask(this, 'initFag'); //等待初始化任务完成后继续执行下面代码
+    await this.appInit()
     this.init()
   },
   data () {
     return {
-      shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg',
-      shopName: '店铺名称',
+      shopIcon: '',
+      shopName: '',
       inputWidth: 168 / fontSize + 'rem',
       placeholder: '请输入付款金额',
       inputAmount: '',
@@ -71,6 +72,53 @@ export default {
     VoucherListItem
   },
   methods: {
+
+    async appInit() {
+      let that = this
+      const openId = this.$utils.getParam('openId')
+      const aliPayUserId = this.$utils.getParam('aliPayUserId')
+      this.$store.commit('setOpenId', openId)
+      this.$store.commit('setAliPayUserId', aliPayUserId)
+
+      if (openId != null || aliPayUserId != null) {
+        let para = openId == null ? aliPayUserId : openId
+        await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/userinfo/getMainUserIdByOpenId', { params: { openId: para }}).then(res => {
+          console.log('获取用户id', res.data);
+          if (res.data.status == '100') {
+            that.$store.commit('setMainUserId', res.data.data.mainUserId)
+          }
+        })
+      }
+      let cashierCode = ''
+      if (openId != null) { //微信支付
+        cashierCode = 'WFT-WECHAT'
+      } else if (aliPayUserId != null) { //支付宝支付
+        cashierCode = 'WFT-AILPAY'
+      } else {
+        // this.$router.push({ //不支持的浏览器，跳转到提示页面
+        //   name: 'TipsPage',
+        //   params: {
+        //     iconType: 'warn',
+        //     msg1: '不支持的浏览器类型。'
+        //   }
+        // })
+      }
+      await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/cashierinfo/getCashierinfo', { params: { cashierCode: cashierCode }}).then(res => {
+        console.log('获取收银台列表', res.data);
+        if (res.data.status == 100) {
+          that.$store.commit('setCashierId', res.data.data.cashierId)
+        } else {
+          this.$router.push({ //不支持的浏览器，跳转到提示页面
+            name: 'TipsPage',
+            params: {
+              iconType: 'warn',
+              msg1: '网络异常，请稍后重试。'
+            }
+          })
+        }
+      })
+    },
+
     init() {
       let that = this
       this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/company/getCmpyInfo', { params: { mchId: that.$store.state.mchId }}).then(res => {
@@ -190,22 +238,22 @@ export default {
             }
             this.$axios.post(this.$store.state.host + this.$store.state.path + '/sk2/mobile/pay/wftWechatPay', that.$qs.stringify(data)).then(res => {
               console.log('微信支付', res.data);
-              // if (res.data.status == 100) {
+              if (res.data.status == 100) {
                 this.$vux.loading.hide()
                  //跳转到支付成功页面
                 this.$router.push({name: 'PaySuccessPage'})
-              // } else {
-              //   this.$vux.loading.hide()
-              //   this.$router.push({ //跳转到支付失败页面
-              //     name: 'TipsPage',
-              //     params: {
-              //       iconType: 'warn',
-              //       msg1: '支付失败'
-              //     }
-              //   })
-              // }
+              } else {
+                this.$vux.loading.hide()
+                this.$router.push({ //跳转到支付失败页面
+                  name: 'TipsPage',
+                  params: {
+                    iconType: 'warn',
+                    msg1: '支付失败'
+                  }
+                })
+              }
             })
-          } else if (this.$store.state.aliPayUserId != null) { //嗲用支付宝支付
+          } else if (this.$store.state.aliPayUserId != null) { //调用支付宝支付
             let data = {
               channelId: that.$store.state.cashierId,	//Y		支付通道id
               buyerId: that.$store.state.aliPayUserId,	//Y		支付宝用户id（付款方）

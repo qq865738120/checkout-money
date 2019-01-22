@@ -24,6 +24,7 @@ export default new Vuex.Store({
     mainUserId: '', //用户id
     shopName: '', //店铺名称
     shopIcon: '', //店铺图标
+    redirecturl: '', //支付成功后跳转的url
   },
   mutations: {
     setEnvironment(state, value) {
@@ -76,6 +77,9 @@ export default new Vuex.Store({
     },
     setShopIcon(state, value) {
       state.shopIcon = value
+    },
+    setRedirecturl(state, value) {
+      state.redirecturl = value
     }
   }
 })

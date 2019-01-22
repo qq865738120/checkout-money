@@ -25,6 +25,7 @@ export default {
       // let par = '?titleId='+ that.$store.state.liveTitleId +'&openId='+ that.$store.state.openId +'&cmpyId=' + that.$store.state.cmpyId;
       clearInterval(id);
       // window.location.href = this.$store.state.relHost + '/newmedia/pages/mobile/MicroWebsite/livebroadcast/livebroadCasttable.html' + par;
+      window.location.href = this.$store.state.redirecturl
     }, that.time * 1000)
   },
   data () {
