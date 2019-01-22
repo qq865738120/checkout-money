@@ -11,7 +11,7 @@ export default new Vuex.Store({
     path: '', //接口路径前缀
     relHost: '', //实际真实域名，该配置会影响对接老项目的url跳转
 
-    appid: 'wxfb8665f40c96d92c',
+    appid: '',
     initFag: false,
     mchId: '', // 商户id
     cashierId: '', //收银台id

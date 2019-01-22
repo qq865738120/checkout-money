@@ -106,7 +106,7 @@ export default {
       await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/cashierinfo/getCashierinfo', { params: { cashierCode: cashierCode }}).then(res => {
         console.log('获取收银台列表', res.data);
         if (res.data.status == 100) {
-          that.$store.commit('setCashierId', res.data.data.cashierId)
+          that.$store.commit('setCashierId', res.data.data.paymentChannels[0].channelId)
         } else {
           this.$router.push({ //不支持的浏览器，跳转到提示页面
             name: 'TipsPage',
@@ -240,8 +240,11 @@ export default {
               console.log('微信支付', res.data);
               if (res.data.status == 100) {
                 this.$vux.loading.hide()
-                 //跳转到支付成功页面
-                this.$router.push({name: 'PaySuccessPage'})
+                this.$store.commit('setAppid', res.data.data.dataMap.appId)
+                let successUrl = encodeURIComponent(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1])
+                let failUrl = encodeURIComponent(window.location.href.split("?")[0] + 'tips?' + window.location.href.split('?')[1])
+                let parm = `openId=${this.$store.state.openId}&appId=${this.$store.state.appId}&timeStamp=${res.data.data.dataMap.timestamp}&nonceStr=${res.data.data.dataMap.noncestr}&packages=${res.data.data.dataMap.packages}&signType=${res.data.data.dataMap.signType}&paySign=${res.data.data.dataMap.sign}&successUrl=${successUrl}&failUrl=${failUrl}`
+                window.location.href = this.$store.state.relHost + '/sk2/page/pay/wft/wechat.html?'
               } else {
                 this.$vux.loading.hide()
                 this.$router.push({ //跳转到支付失败页面
@@ -263,13 +266,10 @@ export default {
               console.log('支付宝支付', res.data);
               if (res.data.status == 100) {
                 this.$vux.loading.hide()
-                this.$router.push({ //跳转到支付成功页面
-                  name: 'TipsPage',
-                  params: {
-                    iconType: 'success',
-                    msg1: '支付成功'
-                  }
-                })
+                let successUrl = encodeURIComponent(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1])
+                let failUrl = encodeURIComponent(window.location.href.split("?")[0] + 'tips?' + window.location.href.split('?')[1])
+                let parm = `tradeNO=${res.data.data.dataMap.tradeNO}&successUrl=${successUrl}&failUrl=${failUrl}`
+                window.location.href = this.$store.state.relHost + '/sk2/page/pay/wft/wechat.html?'
               } else {
                 this.$vux.loading.hide()
                 this.$router.push({ //跳转到支付失败页面

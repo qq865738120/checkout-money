@@ -79,9 +79,6 @@ export default {
         window.location.href = window.location.hash + '&openId=oTeRM1DsyW24Tt-bDXTkDUGOW3T8'
         // window.location.href = window.location.hash + '&aliPayUserId=2088612640305883'
       }
-
-
-
     }
   }
 }
