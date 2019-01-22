@@ -243,8 +243,9 @@ export default {
                 this.$store.commit('setAppid', res.data.data.dataMap.appId)
                 let successUrl = encodeURIComponent(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1])
                 let failUrl = encodeURIComponent(window.location.href.split("?")[0] + 'tips?' + window.location.href.split('?')[1])
-                let parm = `openId=${this.$store.state.openId}&appId=${this.$store.state.appId}&timeStamp=${res.data.data.dataMap.timestamp}&nonceStr=${res.data.data.dataMap.noncestr}&packages=${res.data.data.dataMap.packages}&signType=${res.data.data.dataMap.signType}&paySign=${res.data.data.dataMap.sign}&successUrl=${successUrl}&failUrl=${failUrl}`
-                window.location.href = this.$store.state.relHost + '/sk2/page/pay/wft/wechat.html?'
+                let parm = `openId=${this.$store.state.openId}&appId=${res.data.data.dataMap.appId}&timeStamp=${res.data.data.dataMap.timestamp}&nonceStr=${res.data.data.dataMap.noncestr}&packages=${res.data.data.dataMap.packages}&signType=${res.data.data.dataMap.signType}&paySign=${res.data.data.dataMap.sign}&successUrl=${successUrl}&failUrl=${failUrl}`
+                console.log('par', parm);
+                // window.location.href = this.$store.state.relHost + '/sk2/page/pay/wft/wechat.html?' + parm
               } else {
                 this.$vux.loading.hide()
                 this.$router.push({ //跳转到支付失败页面
@@ -269,7 +270,7 @@ export default {
                 let successUrl = encodeURIComponent(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1])
                 let failUrl = encodeURIComponent(window.location.href.split("?")[0] + 'tips?' + window.location.href.split('?')[1])
                 let parm = `tradeNO=${res.data.data.dataMap.tradeNO}&successUrl=${successUrl}&failUrl=${failUrl}`
-                window.location.href = this.$store.state.relHost + '/sk2/page/pay/wft/wechat.html?'
+                window.location.href = this.$store.state.relHost + '/sk2/page/pay/wft/alipay.html?' + parm
               } else {
                 this.$vux.loading.hide()
                 this.$router.push({ //跳转到支付失败页面
