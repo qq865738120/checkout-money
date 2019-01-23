@@ -106,7 +106,7 @@ export default {
 
     onInputChange() { //金额输入框数值改变触发
       this.placeholder = ''
-      this.inputWidth = (14 + (this.inputAmount.length - 1) * 14) / fontSize + 'rem'
+      this.inputWidth = (30 + (this.inputAmount.length - 1) * 14) / fontSize + 'rem'
     },
 
     onInputBlur() { //金额输入框失去焦点
@@ -281,7 +281,7 @@ export default {
   font-size: 24px;
 }
 // .open-input {
-//   width: 168px;
+//
 // }
 .voucher {
   font-size: 13px;

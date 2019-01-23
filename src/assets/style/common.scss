@@ -17,6 +17,7 @@ html {
 * {
   -webkit-overflow-scrolling: touch;
 }
+input,button,select,textarea{outline:none}
 
 /* 全局常用类 */
 .com-flex-center {

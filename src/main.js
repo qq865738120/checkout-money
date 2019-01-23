@@ -65,9 +65,9 @@ new Vue({
         path: '/api',
 
         /* 打包的话使用此配置 */
-        // environment: 'online', //本地环境配为local，线上环境配为online
-        // host: 'https://xcx.yc.soukong.cn', //测试环境
-        // path: '',
+        environment: 'online', //本地环境配为local，线上环境配为online
+        host: 'https://xcx.yc.soukong.cn', //测试环境
+        path: '',
 
         /* 生产环境使用此配置 */
         // environment: 'online', //本地环境配为local，线上环境配为online

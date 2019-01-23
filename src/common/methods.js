@@ -30,8 +30,8 @@ const _formatVoucherDetail = function(context, data, amount, receive) {
   result.vPeriod = context.$utils.formatDate(context.$utils.string2Date(data.startTimeStr), 'yyyy.MM.dd') + '-' + context.$utils.formatDate(context.$utils.string2Date(data.endTimeStr), 'yyyy.MM.dd');
   result.voucherType = data.discountType == 1 ? '代金券' : '折扣券';
   result.condition = '满' + data.useMoney + '可用';
-  result.amount = data.discountType == 1 ? data.money : data.rebate;
-  result.isAvailable = receive ? true : parseInt(amount) >= data.useMoney ? true : false;
+  result.amount = data.discountType == 1 ? data.moneyStr : data.rebate;
+  result.isAvailable = receive ? true : parseFloat(amount) >= parseFloat(data.useMoneyStr) ? true : false;
   result.receive = receive;
   result.id = data.discountDetailId || data.discountId;
   return result
@@ -58,9 +58,9 @@ const appInit = async function(that) {
   }
   let cashierCode = ''
   if (openId != null) { //微信支付
-    cashierCode = 'WFT-WECHAT'
+    cashierCode = 'SKM-WECHAT'
   } else if (aliPayUserId != null) { //支付宝支付
-    cashierCode = 'WFT-AILPAY'
+    cashierCode = 'SKM-AILPAY'
   } else {
     // that.$router.push({ //不支持的浏览器，跳转到提示页面
     //   name: 'TipsPage',
