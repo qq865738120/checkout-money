@@ -37,6 +37,56 @@ const _formatVoucherDetail = function(context, data, amount, receive) {
   return result
 }
 
+/*
+页面初始化操作
+参数：that 页面this引用
+*/
+const appInit = async function(that) {
+  const openId = that.$utils.getParam('openId')
+  const aliPayUserId = that.$utils.getParam('aliPayUserId')
+  that.$store.commit('setOpenId', openId)
+  that.$store.commit('setAliPayUserId', aliPayUserId)
+
+  if (openId != null || aliPayUserId != null) {
+    let para = openId == null ? aliPayUserId : openId
+    await that.$axios.get(that.$store.state.host + that.$store.state.path + '/sk2/mobile/userinfo/getMainUserIdByOpenId', { params: { openId: para }}).then(res => {
+      console.log('获取用户id', res.data);
+      if (res.data.status == '100') {
+        that.$store.commit('setMainUserId', res.data.data.mainUserId)
+      }
+    })
+  }
+  let cashierCode = ''
+  if (openId != null) { //微信支付
+    cashierCode = 'WFT-WECHAT'
+  } else if (aliPayUserId != null) { //支付宝支付
+    cashierCode = 'WFT-AILPAY'
+  } else {
+    // that.$router.push({ //不支持的浏览器，跳转到提示页面
+    //   name: 'TipsPage',
+    //   params: {
+    //     iconType: 'warn',
+    //     msg1: '不支持的浏览器类型。'
+    //   }
+    // })
+  }
+  await that.$axios.get(that.$store.state.host + that.$store.state.path + '/sk2/mobile/cashierinfo/getCashierinfo', { params: { cashierCode: cashierCode }}).then(res => {
+    console.log('获取收银台列表', res.data);
+    if (res.data.status == 100) {
+      that.$store.commit('setCashierId', res.data.data.paymentChannels[0].channelId)
+    } else {
+      that.$router.push({ //不支持的浏览器，跳转到提示页面
+        name: 'TipsPage',
+        params: {
+          iconType: 'warn',
+          msg1: '网络异常，请稍后重试。'
+        }
+      })
+    }
+  })
+}
+
 export default {
-  getVoucherDetail
+  getVoucherDetail,
+  appInit
 }

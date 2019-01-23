@@ -1,8 +1,8 @@
 <template>
   <div class="root">
-    <img class="icon" v-lazy="$store.state.shopIcon"/>
-    <p class="title">{{ $store.state.shopName }}</p>
-    <span class="amount">{{ $store.state.payAmount }}</span>
+    <img class="icon" v-lazy="shopIcon"/>
+    <p class="title">{{ shopName }}</p>
+    <span class="amount">{{ amount }}</span>
     <span class="tip">支付成功</span>
     <div>{{ time }}s <span style="color: #999"> 后自动跳转</span></div>
     <VoucherListItem class="voucher-item" v-for="(item, index) of voucherList" :data="item" :key="index" @use="onVoucherUse"></VoucherListItem>
@@ -15,25 +15,27 @@ import VoucherListItem from '@/components/VoucherListItem'
 
 export default {
   name: 'PaySuccessPage',
-  mounted() {
+  async mounted() {
+    this.shopIcon = this.$utils.getParam('shopIcon')
+    this.shopName = this.$utils.getParam('shopName')
+    this.amount = this.$utils.getParam('payAmount')
+    await this.$utils.waitTask(this, 'initFag'); //等待初始化任务完成后继续执行下面代码
     this.refVoucherList()
     let that = this;
     let id = setInterval(() => {
       that.time--
     }, 1000);
     setTimeout(() => {
-      // let par = '?titleId='+ that.$store.state.liveTitleId +'&openId='+ that.$store.state.openId +'&cmpyId=' + that.$store.state.cmpyId;
       clearInterval(id);
-      // window.location.href = this.$store.state.relHost + '/newmedia/pages/mobile/MicroWebsite/livebroadcast/livebroadCasttable.html' + par;
       window.location.href = this.$store.state.redirecturl
     }, that.time * 1000)
   },
   data () {
     return {
-      shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg',
-      shopName: '搜空生活小店',
-      amount: '198',
-      time: 12,
+      shopIcon: '',
+      shopName: '',
+      amount: '',
+      time: 16,
       voucherList: [] // isAvailable: 是否可使用, receive: 是否显示立即领取, bgColor: 背景色, amount: 优惠券金额, condition: 优惠券使用条件, shopIcon: 店铺图标, shopName: 店铺名称, vPeriod: 使用期限
     }
   },

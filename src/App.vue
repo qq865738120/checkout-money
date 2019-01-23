@@ -18,12 +18,14 @@
 
 <script>
 import { GridLoader } from '@saeris/vue-spinners'
+import methods from '@/common/methods.js'
 
 export default {
   name: 'App',
   /* 该方法中完成项目的初始化工作 */
   async created() {
     await this.init()
+    await methods.appInit(this)
     setTimeout(() => {
       this.$store.commit('setInitFag', true)
     }, 1400)
@@ -66,16 +68,13 @@ export default {
       if (browserType == '0' && openId == null) { //微信浏览器
         console.log('微信浏览器路线');
         // alert('微信')
-        this.$store.commit('setReloadFag', true)
         window.location.href = this.$store.state.relHost + '/sk2/mobile/authorization/wechat/snsapiBase?returnUrl=' + returnUrl
       } else if (browserType == '1' && aliPayUserId == null) { //支付宝浏览器
         console.log('支付宝浏览器路线');
         // alert('支付宝')
-        this.$store.commit('setReloadFag', true)
         window.location.href = this.$store.state.relHost + '/sk2/mobile/authorization/alipay/publicAppAuthorize?returnUrl=' + returnUrl + '&scope=auth_base'
       } else if (openId == null && aliPayUserId == null) { //其他浏览器
         // alert('其他')
-        this.$store.commit('setReloadFag', true)
         window.location.href = window.location.hash + '&openId=oTeRM1DsyW24Tt-bDXTkDUGOW3T8'
         // window.location.href = window.location.hash + '&aliPayUserId=2088612640305883'
       }

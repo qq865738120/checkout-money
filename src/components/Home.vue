@@ -45,7 +45,9 @@ export default {
   async mounted() {
     fontSize = parseInt(this.$('html').css('font-size').replace('px', ''));
     await this.$utils.waitTask(this, 'initFag'); //等待初始化任务完成后继续执行下面代码
-    await this.appInit()
+    if (!this.$store.state.mainUserId) {
+      await this.appInit()
+    }
     this.init()
   },
   data () {
@@ -60,10 +62,6 @@ export default {
       amount: 0,
       isShowPopup: false,
       voucherList: [ // isAvailable: 是否可使用, receive: 是否显示立即领取, bgColor: 背景色, amount: 优惠券金额, condition: 优惠券使用条件, shopIcon: 店铺图标, shopName: 店铺名称, vPeriod: 使用期限
-        { id: '', isAvailable: false, receive: false, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
-        { id: '', isAvailable: true, receive: true, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
-        { id: '', isAvailable: false, receive: true, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
-        { id: '', isAvailable: true, receive: true, bgColor: '#fcf4f2', amount: 10, condition: '满199可用', shopIcon: 'http://www.yougexing.net/uploads/180625/1-1P625150924-50.jpg', shopName: '美美的夏夏小店', vPeriod: '2018.12.14-2018.12.31', voucherType: '代金券', voucherCount: '3' },
       ],
       voucherTag: '' //优惠券类型
     }
@@ -74,49 +72,7 @@ export default {
   methods: {
 
     async appInit() {
-      let that = this
-      const openId = this.$utils.getParam('openId')
-      const aliPayUserId = this.$utils.getParam('aliPayUserId')
-      this.$store.commit('setOpenId', openId)
-      this.$store.commit('setAliPayUserId', aliPayUserId)
-
-      if (openId != null || aliPayUserId != null) {
-        let para = openId == null ? aliPayUserId : openId
-        await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/userinfo/getMainUserIdByOpenId', { params: { openId: para }}).then(res => {
-          console.log('获取用户id', res.data);
-          if (res.data.status == '100') {
-            that.$store.commit('setMainUserId', res.data.data.mainUserId)
-          }
-        })
-      }
-      let cashierCode = ''
-      if (openId != null) { //微信支付
-        cashierCode = 'WFT-WECHAT'
-      } else if (aliPayUserId != null) { //支付宝支付
-        cashierCode = 'WFT-AILPAY'
-      } else {
-        // this.$router.push({ //不支持的浏览器，跳转到提示页面
-        //   name: 'TipsPage',
-        //   params: {
-        //     iconType: 'warn',
-        //     msg1: '不支持的浏览器类型。'
-        //   }
-        // })
-      }
-      await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/cashierinfo/getCashierinfo', { params: { cashierCode: cashierCode }}).then(res => {
-        console.log('获取收银台列表', res.data);
-        if (res.data.status == 100) {
-          that.$store.commit('setCashierId', res.data.data.paymentChannels[0].channelId)
-        } else {
-          this.$router.push({ //不支持的浏览器，跳转到提示页面
-            name: 'TipsPage',
-            params: {
-              iconType: 'warn',
-              msg1: '网络异常，请稍后重试。'
-            }
-          })
-        }
-      })
+      await methods.appInit(this)
     },
 
     init() {
@@ -241,10 +197,11 @@ export default {
               if (res.data.status == 100) {
                 this.$vux.loading.hide()
                 this.$store.commit('setAppid', res.data.data.dataMap.appId)
-                let successUrl = encodeURIComponent(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1])
-                let failUrl = encodeURIComponent(window.location.href.split("?")[0] + 'tips?' + window.location.href.split('?')[1])
+                let successUrl = escape(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1] + `&shopIcon=${that.$store.state.shopIcon}&shopName=${that.$store.state.shopName}&payAmount=${that.$store.state.payAmount}`)
+                let failUrl = escape(window.location.href.split("?")[0] + 'tips?' + window.location.href.split('?')[1])
                 let parm = `openId=${this.$store.state.openId}&appId=${res.data.data.dataMap.appId}&timeStamp=${res.data.data.dataMap.timeStamp}&nonceStr=${res.data.data.dataMap.nonceStr}&packages=${res.data.data.dataMap.packages}&signType=${res.data.data.dataMap.signType}&paySign=${res.data.data.dataMap.sign}&successUrl=${successUrl}&failUrl=${failUrl}`
                 console.log('par', parm);
+                console.log('successUrl',successUrl);
                 window.location.href = this.$store.state.relHost + '/sk2/page/pay/wft/wechat.html?' + parm
               } else {
                 this.$vux.loading.hide()
