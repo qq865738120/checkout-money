@@ -77,6 +77,7 @@ export default {
 
     init() {
       let that = this
+      this.amount = this.$store.state.amount
       this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/company/getCmpyInfo', { params: { mchId: that.$store.state.mchId }}).then(res => {
         console.log('获取商户信息', res.data);
         if (res.data.status == '100') {
