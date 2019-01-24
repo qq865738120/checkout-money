@@ -7,6 +7,7 @@ import Router from 'vue-router'
 
 const Home = () => import('@/components/Home')
 const PaySuccessPage = () => import('@/components/PaySuccessPage')
+const PayFailPage = () => import('@/components/PayFailPage')
 const TipsPage = () => import('@/components/TipsPage')
 
 Vue.use(Router)
@@ -39,6 +40,15 @@ export default new Router({
         bgColor: '#ffffff'
       },
       component: TipsPage
+    },
+    { // 主页
+      path: '/pay/fail',
+      name: 'PayFailPage',
+      meta: {
+        title: '支付失败',
+        bgColor: '#ffffff'
+      },
+      component: PayFailPage
     },
   ]
 })

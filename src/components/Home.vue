@@ -83,8 +83,8 @@ export default {
         if (res.data.status == '100') {
           that.shopIcon = res.data.data.logoUrl;
           that.$store.commit('setShopIcon', res.data.data.logoUrl)
-          that.shopName = res.data.data.cmpyName;
-          that.$store.commit('setShopName', res.data.data.cmpyName)
+          that.shopName = res.data.data.simpCmpyName;
+          that.$store.commit('setShopName', res.data.data.simpCmpyName)
         }
       })
       let parm = {
@@ -199,7 +199,7 @@ export default {
                 this.$vux.loading.hide()
                 this.$store.commit('setAppid', res.data.data.dataMap.appId)
                 let successUrl = escape(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1] + `&shopIcon=${that.$store.state.shopIcon}&shopName=${that.$store.state.shopName}&payAmount=${that.$store.state.payAmount}`)
-                let failUrl = escape(window.location.href.split("?")[0] + 'tips?' + window.location.href.split('?')[1])
+                let failUrl = escape(window.location.href.split("?")[0] + 'pay/fail?' + window.location.href.split('?')[1])
                 let parm = `openId=${this.$store.state.openId}&appId=${res.data.data.dataMap.appId}&timeStamp=${res.data.data.dataMap.timeStamp}&nonceStr=${res.data.data.dataMap.nonceStr}&packages=${res.data.data.dataMap.packages}&signType=${res.data.data.dataMap.signType}&paySign=${res.data.data.dataMap.sign}&successUrl=${successUrl}&failUrl=${failUrl}`
                 console.log('par', parm);
                 console.log('successUrl',successUrl);
@@ -225,8 +225,8 @@ export default {
               console.log('支付宝支付', res.data);
               if (res.data.status == 100) {
                 this.$vux.loading.hide()
-                let successUrl = encodeURIComponent(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1])
-                let failUrl = encodeURIComponent(window.location.href.split("?")[0] + 'tips?' + window.location.href.split('?')[1])
+                let successUrl = unescape(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1] + `&shopIcon=${that.$store.state.shopIcon}&shopName=${that.$store.state.shopName}&payAmount=${that.$store.state.payAmount}`)
+                let failUrl = unescape(window.location.href.split("?")[0] + 'pay/fail?' + window.location.href.split('?')[1])
                 let parm = `tradeNO=${res.data.data.dataMap.tradeNO}&successUrl=${successUrl}&failUrl=${failUrl}`
                 window.location.href = this.$store.state.relHost + '/sk2/page/pay/wft/alipay.html?' + parm
               } else {
@@ -242,6 +242,7 @@ export default {
             })
           }
         } else {
+          this.$vux.loading.hide()
           this.$vux.toast.show({
             text: res.data.msg,
             type: 'text'
