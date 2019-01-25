@@ -65,17 +65,17 @@ new Vue({
         path: '/api',
 
         /* 打包的话使用此配置 */
-        environment: 'online', //本地环境配为local，线上环境配为online
-        host: 'https://xcx.yc.soukong.cn', //测试环境
-        path: '',
-
-        /* 生产环境使用此配置 */
         // environment: 'online', //本地环境配为local，线上环境配为online
-        // host: 'https://sk2.soukong.com', //正式环境
+        // host: 'https://xcx.yc.soukong.cn', //测试环境
         // path: '',
 
-        relHost: 'https://xcx.yc.soukong.cn', //实际真实域名，该配置会影响对接老项目的url跳转
-        // relHost: 'https://sk2.soukong.com' //实际真实域名，该配置会影响对接老项目的url跳转
+        /* 生产环境使用此配置 */
+        environment: 'online', //本地环境配为local，线上环境配为online
+        host: 'https://sk2.soukong.com', //正式环境
+        path: '',
+
+        // relHost: 'https://xcx.yc.soukong.cn', //实际真实域名，该配置会影响对接老项目的url跳转
+        relHost: 'https://sk2.soukong.com' //实际真实域名，该配置会影响对接老项目的url跳转
       }
       this.$store.commit('setHost', config.host)
       this.$store.commit('setPath', config.path)

@@ -13,7 +13,7 @@ module.exports = {
     proxyTable: { // 配置代理
       '/api': {
         target: 'http://xcx.yc.soukong.cn',
-        // target: 'http://sk2.soukong.com',
+        // target: 'https://qrcodepay.soukong.com',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

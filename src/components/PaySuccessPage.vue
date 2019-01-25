@@ -53,9 +53,13 @@ export default {
 
     refVoucherList() {
       let that = this
+      this.$vux.loading.show({
+       text: '加载中'
+      })
       this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/cmpy/discount/receiveList', { params: { mchId: that.$store.state.mchId, mainUserId: that.$store.state.mainUserId }}).then(res => {
         console.log('获取可领取优惠券列表', res.data);
         this.voucherList = methods.getVoucherDetail(this, res.data.data, 0, true)
+        this.$vux.loading.hide()
       })
     },
 
@@ -81,6 +85,7 @@ export default {
           })
           this.$vux.loading.hide()
         }
+        this.refVoucherList()
       })
     }
 

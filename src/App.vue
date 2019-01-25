@@ -51,7 +51,11 @@ export default {
           that.$store.commit('setMchId', res.data.data.mchId)
           that.$store.commit('setQrcodeType', res.data.data.qrcodeType)
           that.$store.commit('setAmount', res.data.data.moneyStr)
-          that.$store.commit('setRedirecturl', res.data.data.redirecturl)
+          let url = ''
+          if (res.data.data.redirecturl != '') {
+            url = res.data.data.redirecturl.indexOf('http') == -1 ? 'http://' + res.data.data.redirecturl : res.data.data.redirecturl
+          }
+          that.$store.commit('setRedirecturl', url)
         } else {
           this.$router.push({ //不支持的浏览器，跳转到提示页面
             name: 'TipsPage',

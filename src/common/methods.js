@@ -29,7 +29,7 @@ const _formatVoucherDetail = function(context, data, amount, receive) {
   result.bgColor = '#fcf4f2';
   result.vPeriod = context.$utils.formatDate(context.$utils.string2Date(data.startTimeStr), 'yyyy.MM.dd') + '-' + context.$utils.formatDate(context.$utils.string2Date(data.endTimeStr), 'yyyy.MM.dd');
   result.voucherType = data.discountType == 1 ? '代金券' : '折扣券';
-  result.condition = '满' + data.useMoneyStr + '可用';
+  result.condition = '满' + data.useMoneyStr + '元可用';
   result.amount = data.discountType == 1 ? data.moneyStr : data.rebate;
   result.isAvailable = receive ? true : parseFloat(amount) >= parseFloat(data.useMoneyStr) ? true : false;
   result.receive = receive;
