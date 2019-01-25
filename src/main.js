@@ -12,11 +12,10 @@ import '@/assets/style/common.scss'
 import 'lib-flexible/flexible'
 import './common/vux-component.js' //vux按需引入组件
 import utils from './common/utils.js' //全局引入自定义工具类
-import comm from './common/comm.js' //引入公共js
 import './common/filter.js' //全局定义过滤器
 import $ from 'jquery'
 import VueLazyload from 'vue-lazyload' //图片懒加载插件
-var wx = require('weixin-js-sdk'); //引入微信js-sdk
+// var wx = require('weixin-js-sdk'); //引入微信js-sdk
 
 Vue.config.productionTip = false
 
@@ -28,9 +27,7 @@ Vue.prototype.$axios = axios.create({
 });
 Vue.prototype.$qs = Qs;
 Vue.prototype.$utils = utils;
-Vue.prototype.$comm = comm;
 Vue.prototype.$ = $;
-Vue.prototype.$wx = wx;
 
 Vue.use(VueLazyload, {
   attempt: 1,

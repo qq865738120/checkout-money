@@ -41,7 +41,7 @@ export default {
       shopIcon: '',
       shopName: '',
       amount: '',
-      time: 16,
+      time: 8,
       voucherList: [], // isAvailable: 是否可使用, receive: 是否显示立即领取, bgColor: 背景色, amount: 优惠券金额, condition: 优惠券使用条件, shopIcon: 店铺图标, shopName: 店铺名称, vPeriod: 使用期限
       isShow: false //是否展示跳转文字
     }
@@ -59,6 +59,9 @@ export default {
       this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/cmpy/discount/receiveList', { params: { mchId: that.$store.state.mchId, mainUserId: that.$store.state.mainUserId }}).then(res => {
         console.log('获取可领取优惠券列表', res.data);
         this.voucherList = methods.getVoucherDetail(this, res.data.data, 0, true)
+        if (this.voucherList.length == 0) {
+          this.time = 3
+        }
         this.$vux.loading.hide()
       })
     },

@@ -87,12 +87,17 @@ export default {
           that.$store.commit('setShopName', res.data.data.simpCmpyName)
         }
       })
+      this.flushList()
+    },
+
+    flushList() {
       let parm = {
         mchId: that.$store.state.mchId,
         mainUserId: that.$store.state.mainUserId
       }
       this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/cmpy/discount/userDiscounts', { params: parm}).then(res => {
         console.log('获取优惠券列表', res.data);
+        this.$vux.loading.hide()
         if (res.data.status == 100) {
           let data = res.data.data
           if (data.length == 0) { //没有优惠券
@@ -133,9 +138,9 @@ export default {
         }
       }
       this.$vux.loading.show({
-       text: '加载中'
+        text: '加载中'
       })
-      this.$vux.loading.hide()
+      this.flushList()
       this.voucherList = methods.getVoucherDetail(this, voucherList, this.inputAmount, false)
       this.isShowPopup = true
     },
@@ -225,8 +230,8 @@ export default {
               console.log('支付宝支付', res.data);
               if (res.data.status == 100) {
                 this.$vux.loading.hide()
-                let successUrl = unescape(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1] + `&shopIcon=${that.$store.state.shopIcon}&shopName=${that.$store.state.shopName}&payAmount=${that.$store.state.payAmount}`)
-                let failUrl = unescape(window.location.href.split("?")[0] + 'pay/fail?' + window.location.href.split('?')[1])
+                let successUrl = escape(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1] + `&shopIcon=${that.$store.state.shopIcon}&shopName=${that.$store.state.shopName}&payAmount=${that.$store.state.payAmount}`)
+                let failUrl = escape(window.location.href.split("?")[0] + 'pay/fail?' + window.location.href.split('?')[1])
                 let parm = `tradeNO=${res.data.data.dataMap.tradeNO}&successUrl=${successUrl}&failUrl=${failUrl}`
                 window.location.href = this.$store.state.relHost + '/sk2/page/pay/wft/alipay.html?' + parm
               } else {

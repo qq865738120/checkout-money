@@ -9,6 +9,7 @@
 const getVoucherDetail = function(context, data, amount, receive) {
   let result = []
   for (let item of data) {
+    if (item.receive && item.receive == 1) continue
     result.push(_formatVoucherDetail(context, item, amount, receive))
   }
   return result

@@ -28,7 +28,7 @@ export default {
     await methods.appInit(this)
     setTimeout(() => {
       this.$store.commit('setInitFag', true)
-    }, 1400)
+    }, 2400)
 
   },
   components: {

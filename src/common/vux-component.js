@@ -17,7 +17,6 @@ import {
   XNumber,
   Actionsheet,
   XDialog,
-  Qrcode,
   Popup,
   AlertPlugin,
   ConfirmPlugin,
@@ -39,7 +38,6 @@ Vue.component('CheckerItem', CheckerItem)
 Vue.component('XNumber', XNumber)
 Vue.component('Actionsheet', Actionsheet)
 Vue.component('XDialog', XDialog)
-Vue.component('Qrcode', Qrcode)
 Vue.component('Popup', Popup)
 Vue.use(AlertPlugin)
 Vue.use(ConfirmPlugin)
