@@ -91,6 +91,7 @@ export default {
     },
 
     flushList() {
+      let that = this;
       let parm = {
         mchId: that.$store.state.mchId,
         mainUserId: that.$store.state.mainUserId
@@ -103,7 +104,12 @@ export default {
           if (data.length == 0) { //没有优惠券
             this.state = 'noVoucher'
           } else { //有优惠券
-            this.state = 'haveVoucher'
+            this.state = 'noVoucher'
+            for (let item of data) {
+              if (item.endStatus == 0 && item.useStatus == 0) {
+                this.state = 'haveVoucher'
+              }
+            }
             voucherList = data;
           }
         }

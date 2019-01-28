@@ -12,8 +12,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: { // 配置代理
       '/api': {
-        target: 'http://xcx.yc.soukong.cn',
-        // target: 'https://qrcodepay.soukong.com',
+        // target: 'http://xcx.yc.soukong.cn',
+        target: 'https://sk2.soukong.com',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
