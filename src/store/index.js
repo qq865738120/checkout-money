@@ -16,6 +16,7 @@ export default new Vuex.Store({
     mchId: '', // 商户id
     cashierId: '', //收银台id
     qrcodeId: '', //二维码id
+    orderNo: '', // 订单id
     qrcodeType: '', //二维码类型 1-自助收款码 2-指定金额收款码
     openId: '', //微信openId
     aliPayUserId: '', //支付宝userId
@@ -53,6 +54,9 @@ export default new Vuex.Store({
     },
     setQrcodeId(state, value) {
       state.qrcodeId = value
+    },
+    setOrderNo(state, value) {
+      state.orderNo = value
     },
     setQrcodeType(state, value) {
       state.qrcodeType = value

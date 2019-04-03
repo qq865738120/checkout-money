@@ -194,72 +194,74 @@ export default {
       if (detailId != '') { //如果使用了优惠券则传优惠券id
         par.discountDetailId = detailId
       }
-      await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/order/submitScanOrder', { params: par}).then(res => {
-        console.log('提交收款码订单', res.data);
-        if (res.data.status == 100) {
-          if (this.$store.state.openId != null) { //调用微信支付
-            let data = {
-              channelId: that.$store.state.cashierId,	//Y		支付通道id
-              orderID: res.data.data.orderNo,	//Y		订单编号
-              openId: that.$store.state.openId,	//Y		微信openId
-              isMinipg: 0	//Y		1-小程序支付 0-js支付
-            }
-            this.$axios.post(this.$store.state.host + this.$store.state.path + '/sk2/mobile/pay/wftWechatPay', that.$qs.stringify(data)).then(res => {
-              console.log('微信支付', res.data);
-              if (res.data.status == 100) {
-                this.$vux.loading.hide()
-                this.$store.commit('setAppid', res.data.data.dataMap.appId)
-                let successUrl = escape(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1] + `&shopIcon=${that.$store.state.shopIcon}&shopName=${that.$store.state.shopName}&payAmount=${that.$store.state.payAmount}`)
-                let failUrl = escape(window.location.href.split("?")[0] + 'pay/fail?' + window.location.href.split('?')[1])
-                let parm = `openId=${this.$store.state.openId}&appId=${res.data.data.dataMap.appId}&timeStamp=${res.data.data.dataMap.timeStamp}&nonceStr=${res.data.data.dataMap.nonceStr}&packages=${res.data.data.dataMap.packages}&signType=${res.data.data.dataMap.signType}&paySign=${res.data.data.dataMap.sign}&successUrl=${successUrl}&failUrl=${failUrl}`
-                console.log('par', parm);
-                console.log('successUrl',successUrl);
-                window.location.href = this.$store.state.relHost + '/sk2/page/pay/wft/wechat.html?' + parm
-              } else {
-                this.$vux.loading.hide()
-                this.$router.push({ //跳转到支付失败页面
-                  name: 'TipsPage',
-                  params: {
-                    iconType: 'warn',
-                    msg1: '支付失败'
-                  }
-                })
-              }
-            })
-          } else if (this.$store.state.aliPayUserId != null) { //调用支付宝支付
-            let data = {
-              channelId: that.$store.state.cashierId,	//Y		支付通道id
-              buyerId: that.$store.state.aliPayUserId,	//Y		支付宝用户id（付款方）
-              orderID: res.data.data.orderNo,	//Y		订单编号
-            }
-            this.$axios.post(this.$store.state.host + this.$store.state.path + '/sk2/mobile/pay/wftAliPay', that.$qs.stringify(data)).then(res => {
-              console.log('支付宝支付', res.data);
-              if (res.data.status == 100) {
-                this.$vux.loading.hide()
-                let successUrl = escape(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1] + `&shopIcon=${that.$store.state.shopIcon}&shopName=${that.$store.state.shopName}&payAmount=${that.$store.state.payAmount}`)
-                let failUrl = escape(window.location.href.split("?")[0] + 'pay/fail?' + window.location.href.split('?')[1])
-                let parm = `tradeNO=${res.data.data.dataMap.tradeNO}&successUrl=${successUrl}&failUrl=${failUrl}`
-                window.location.href = this.$store.state.relHost + '/sk2/page/pay/wft/alipay.html?' + parm
-              } else {
-                this.$vux.loading.hide()
-                this.$router.push({ //跳转到支付失败页面
-                  name: 'TipsPage',
-                  params: {
-                    iconType: 'warn',
-                    msg1: '支付失败'
-                  }
-                })
-              }
-            })
+      let res = ''
+      if (!this.$store.state.orderNo) { //如果没有orderNo则调用接口获取
+        res = await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/order/submitScanOrder', { params: par})
+      }
+      console.log('提交收款码订单', res.data);
+      if ((res.data && res.data.status == 100) || res == '') {
+        if (this.$store.state.openId != null) { //调用微信支付
+          let data = {
+            channelId: that.$store.state.cashierId,	//Y		支付通道id
+            orderID: res == '' ? this.$store.state.orderNo : res.data.data.orderNo,	//Y		订单编号
+            openId: that.$store.state.openId,	//Y		微信openId
+            isMinipg: 0	//Y		1-小程序支付 0-js支付
           }
-        } else {
-          this.$vux.loading.hide()
-          this.$vux.toast.show({
-            text: res.data.msg,
-            type: 'text'
+          this.$axios.post(this.$store.state.host + this.$store.state.path + '/sk2/mobile/pay/wftWechatPay', that.$qs.stringify(data)).then(res => {
+            console.log('微信支付', res.data);
+            if (res.data.status == 100) {
+              this.$vux.loading.hide()
+              this.$store.commit('setAppid', res.data.data.dataMap.appId)
+              let successUrl = escape(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1] + `&shopIcon=${that.$store.state.shopIcon}&shopName=${that.$store.state.shopName}&payAmount=${that.$store.state.payAmount}`)
+              let failUrl = escape(window.location.href.split("?")[0] + 'pay/fail?' + window.location.href.split('?')[1])
+              let parm = `openId=${this.$store.state.openId}&appId=${res.data.data.dataMap.appId}&timeStamp=${res.data.data.dataMap.timeStamp}&nonceStr=${res.data.data.dataMap.nonceStr}&packages=${res.data.data.dataMap.packages}&signType=${res.data.data.dataMap.signType}&paySign=${res.data.data.dataMap.sign}&successUrl=${successUrl}&failUrl=${failUrl}`
+              console.log('par', parm);
+              console.log('successUrl',successUrl);
+              window.location.href = this.$store.state.relHost + '/sk2/page/pay/wft/wechat.html?' + parm
+            } else {
+              this.$vux.loading.hide()
+              this.$router.push({ //跳转到支付失败页面
+                name: 'TipsPage',
+                params: {
+                  iconType: 'warn',
+                  msg1: '支付失败'
+                }
+              })
+            }
+          })
+        } else if (this.$store.state.aliPayUserId != null) { //调用支付宝支付
+          let data = {
+            channelId: that.$store.state.cashierId,	//Y		支付通道id
+            buyerId: that.$store.state.aliPayUserId,	//Y		支付宝用户id（付款方）
+            orderID: res == '' ? this.$store.state.orderNo : res.data.data.orderNo,	//Y		订单编号
+          }
+          this.$axios.post(this.$store.state.host + this.$store.state.path + '/sk2/mobile/pay/wftAliPay', that.$qs.stringify(data)).then(res => {
+            console.log('支付宝支付', res.data);
+            if (res.data.status == 100) {
+              this.$vux.loading.hide()
+              let successUrl = escape(window.location.href.split("?")[0] + 'pay/success?' + window.location.href.split('?')[1] + `&shopIcon=${that.$store.state.shopIcon}&shopName=${that.$store.state.shopName}&payAmount=${that.$store.state.payAmount}`)
+              let failUrl = escape(window.location.href.split("?")[0] + 'pay/fail?' + window.location.href.split('?')[1])
+              let parm = `tradeNO=${res.data.data.dataMap.tradeNO}&successUrl=${successUrl}&failUrl=${failUrl}`
+              window.location.href = this.$store.state.relHost + '/sk2/page/pay/wft/alipay.html?' + parm
+            } else {
+              this.$vux.loading.hide()
+              this.$router.push({ //跳转到支付失败页面
+                name: 'TipsPage',
+                params: {
+                  iconType: 'warn',
+                  msg1: '支付失败'
+                }
+              })
+            }
           })
         }
-      })
+      } else {
+        this.$vux.loading.hide()
+        this.$vux.toast.show({
+          text: res.data.msg,
+          type: 'text'
+        })
+      }
     },
 
   }

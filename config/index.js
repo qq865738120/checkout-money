@@ -12,8 +12,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: { // 配置代理
       '/api': {
-        // target: 'http://xcx.yc.soukong.cn',
-        target: 'https://sk2.soukong.com',
+        target: 'http://xcx.yc.soukong.cn',
+        // target: 'https://sk2.soukong.com',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
@@ -22,7 +22,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: '180.180.180.159', // can be overwritten by process.env.HOST
+    host: '180.180.180.142', // can be overwritten by process.env.HOST
     // host: '192.168.10.101',
     port: 80, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: true,

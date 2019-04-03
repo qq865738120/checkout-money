@@ -38,24 +38,21 @@ export default {
     async init() {
       const that = this;
       const qrcodeId = this.$utils.getParam('qrcodeId')
+      const orderNo = this.$utils.getParam('orderNo')
       const openId = this.$utils.getParam('openId')
       const aliPayUserId = this.$utils.getParam('aliPayUserId')
       console.log('qrcodeId=', qrcodeId);
+      console.log('orderNo=', orderNo);
       // this.$store.commit('setOpenId', openId)
-      that.$store.commit('setQrcodeId', qrcodeId)
       // this.$store.commit('setAliPayUserId', aliPayUserId)
 
-      await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/qrcode/getCompanyQrcodeInfo', { params: { qrcodeId: qrcodeId }}).then(res => {
-        console.log('获取二维码信息', res.data);
-        if (res.data.status == '100') {
+      if (orderNo) {
+        that.$store.commit('setOrderNo', orderNo)
+        let res = await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/order/getOrderInfo.action', { params: { orderNo }})
+        if (res.data.status == 100) {
           that.$store.commit('setMchId', res.data.data.mchId)
-          that.$store.commit('setQrcodeType', res.data.data.qrcodeType)
-          that.$store.commit('setAmount', res.data.data.moneyStr)
-          let url = ''
-          if (res.data.data.redirecturl != '') {
-            url = res.data.data.redirecturl.indexOf('http') == -1 ? 'http://' + res.data.data.redirecturl : res.data.data.redirecturl
-          }
-          that.$store.commit('setRedirecturl', url)
+          that.$store.commit('setQrcodeType', 2)
+          that.$store.commit('setAmount', res.data.data.realAmountStr)
         } else {
           this.$router.push({ //不支持的浏览器，跳转到提示页面
             name: 'TipsPage',
@@ -65,7 +62,30 @@ export default {
             }
           })
         }
-      })
+      } else {
+        that.$store.commit('setQrcodeId', qrcodeId)
+        await this.$axios.get(this.$store.state.host + this.$store.state.path + '/sk2/mobile/qrcode/getCompanyQrcodeInfo', { params: { qrcodeId: qrcodeId }}).then(res => {
+          console.log('获取二维码信息', res.data);
+          if (res.data.status == '100') {
+            that.$store.commit('setMchId', res.data.data.mchId)
+            that.$store.commit('setQrcodeType', res.data.data.qrcodeType)
+            that.$store.commit('setAmount', res.data.data.moneyStr)
+            let url = ''
+            if (res.data.data.redirecturl != '') {
+              url = res.data.data.redirecturl.indexOf('http') == -1 ? 'http://' + res.data.data.redirecturl : res.data.data.redirecturl
+            }
+            that.$store.commit('setRedirecturl', url)
+          } else {
+            this.$router.push({ //不支持的浏览器，跳转到提示页面
+              name: 'TipsPage',
+              params: {
+                iconType: 'warn',
+                msg1: '网络异常，请稍后重试。'
+              }
+            })
+          }
+        })
+      }
 
       const browserType = this.$utils.browserType();
       const returnUrl = encodeURIComponent(window.location.href);
