@@ -224,7 +224,7 @@ export default {
                 name: 'TipsPage',
                 params: {
                   iconType: 'warn',
-                  msg1: '支付失败'
+                  msg1: '二维码已失效'
                 }
               })
             }

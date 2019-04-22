@@ -79,10 +79,12 @@ module.exports = new Promise((resolve, reject) => {
       // add port to devServer config
       devWebpackConfig.devServer.port = port
 
+      const msg = config.DEV_TEST ? '当前接入的是测试环境' : '当前接入的是生产环境'
+
       // Add FriendlyErrorsPlugin
       devWebpackConfig.plugins.push(new FriendlyErrorsPlugin({
         compilationSuccessInfo: {
-          messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`],
+          messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`, msg],
         },
         onErrors: config.dev.notifyOnErrors
         ? utils.createNotifierCallback()

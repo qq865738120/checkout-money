@@ -1,5 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+const config = require('../config').app
+
 import Vue from 'vue'
 import App from './App'
 import router from './router'
@@ -55,25 +57,19 @@ new Vue({
     },
     /* 配置 */
     config() {
-      let config = {
-        /* 本地开发使用此配置 */
-        environment: 'local', //本地环境配为local，线上环境配为online
-        host: 'http://180.180.180.142', //本地环境
-        path: '/api',
+      const testConfig = {
+  environment: 'online', //本地环境配为local，线上环境配为online
+  host: 'https://xcx.yc.soukong.cn', //测试环境
+  path: '',
+  relHost: 'https://xcx.yc.soukong.cn'
+}
 
-        /* 打包的话使用此配置 */
-        environment: 'online', //本地环境配为local，线上环境配为online
-        host: 'https://xcx.yc.soukong.cn', //测试环境
-        path: '',
-
-        /* 生产环境使用此配置 */
-        // environment: 'online', //本地环境配为local，线上环境配为online
-        // host: 'https://sk2.soukong.com', //正式环境
-        // path: '',
-
-        relHost: 'https://xcx.yc.soukong.cn', //实际真实域名，该配置会影响对接老项目的url跳转
-        // relHost: 'https://sk2.soukong.com' //实际真实域名，该配置会影响对接老项目的url跳转
-      }
+const proConfig = {
+  environment: 'online', //本地环境配为local，线上环境配为online
+  host: 'https://sk2.soukong.com', //正式环境
+  path: '',
+  relHost: 'https://sk2.soukong.com' //实际真实域名，该配置会影响对接老项目的url跳转
+}
       this.$store.commit('setHost', config.host)
       this.$store.commit('setPath', config.path)
       this.$store.commit('setEnvironment', config.environment)
